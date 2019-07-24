@@ -49,7 +49,7 @@ public class SongService implements ISongService {
 		logger.info("Getting songs with state {}", state);
 		List<SongDao> songs = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();
-		sb.append("select song.id, song.title, song.trackNum, ");
+		sb.append("select song.id, song.title, song.trackNum, song.state, ");
 		sb.append("album.name, album.sortName, artist.name, artist.sortName from ");
 		sb.append("songs song join albums album on song.album = album.id ");
 		sb.append("join artists artist on album.artist = artist.id ");
@@ -61,8 +61,9 @@ public class SongService implements ISongService {
 			dao.setId(rs.getInt(1));
 			dao.setTitle(rs.getString(2));
 			dao.setTrackNum(rs.getInt(3));
-			dao.setAlbum(rs.getString(4));
-			dao.setArtist(rs.getString(6));
+			dao.setState(rs.getInt(4));
+			dao.setAlbum(rs.getString(5));
+			dao.setArtist(rs.getString(7));
 			songs.add(dao);
 		});
 		logger.info("Found {} songs", songs.size());

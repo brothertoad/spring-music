@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import net.brothertoad.home.music.bean.Artist;
+import net.brothertoad.home.music.bean.ArtistDao;
 
 @Service
 public class ArtistService implements IArtistService {
@@ -20,18 +20,21 @@ public class ArtistService implements IArtistService {
 	private JdbcTemplate jdbc;
 
 	@Override
-	public List<Artist> get() {
-		List<Artist> artists = new ArrayList<>();
-		// Need to modify to only return artists with unripped songs
+	public List<ArtistDao> getArtistsByState(Integer state) {
+		if (state == null) {
+			return getAll();
+		}
+		List<ArtistDao> artists = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();
 		sb.append("select distinct artist.id, artist.name, artist.sortname ");
 		sb.append("from artists artist join albums album ");
 		sb.append("on artist.id = album.artist ");
 		sb.append("inner join songs song on album.id = song.album ");
-		sb.append("where song.ripped = false and song.discarded = false ");
-		sb.append("order by artist.sortname asc");
+		sb.append("where song.state = ");
+		sb.append(state);
+		sb.append(" order by artist.sortname asc");
 		jdbc.query(sb.toString(), new Object[] {}, (rs) -> {
-			Artist artist = new Artist();
+			ArtistDao artist = new ArtistDao();
 			artist.setId(rs.getInt(1));
 			artist.setName(rs.getString(2));
 			artists.add(artist);
@@ -41,10 +44,10 @@ public class ArtistService implements IArtistService {
 	}
 
 	@Override
-	public List<Artist> getAll() {
-		List<Artist> artists = new ArrayList<>();
+	public List<ArtistDao> getAll() {
+		List<ArtistDao> artists = new ArrayList<>();
 		jdbc.query("select id, name from artists order by sortname asc", new Object[] {}, (rs) -> {
-			Artist artist = new Artist();
+			ArtistDao artist = new ArtistDao();
 			artist.setId(rs.getInt(1));
 			artist.setName(rs.getString(2));
 			artists.add(artist);
