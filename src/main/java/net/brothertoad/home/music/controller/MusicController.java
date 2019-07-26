@@ -33,10 +33,18 @@ public class MusicController {
 	private ISongService songService;
 	
 	@CrossOrigin()
-	@GetMapping("/songs/state")
-	public List<SongDao> songsByState(@RequestParam(name="state", required=true) Integer state) {
-		List<SongDao> songs = songService.getSongsByState(state);
+	@GetMapping("/songs/{albumId}/{state}")
+	public List<SongDao> songsByState(@PathVariable Integer albumId, @PathVariable Integer state) {
+		List<SongDao> songs = songService.getSongsByState(albumId, state);
 		logger.info("Controller is returning {} songs.", songs.size());
+		return songs;
+	}
+
+	@CrossOrigin()
+	@GetMapping("/allsongs/{state}")
+	public List<SongDao> songsByState(@PathVariable Integer state) {
+		List<SongDao> songs = songService.getSongsByState(state);
+		logger.info("all songs, controller is returning {} songs.", songs.size());
 		return songs;
 	}
 
@@ -44,7 +52,7 @@ public class MusicController {
 	@GetMapping("/artists/{state}")
 	public List<ArtistDao> artistsByState(@PathVariable Integer state) {
 		List<ArtistDao> artists = artistService.getArtistsByState(state);
-		logger.info("Controller is returning {} artists.", artists.size());
+		// logger.info("Controller is returning {} artists.", artists.size());
 		return artists;
 	}
 
@@ -52,7 +60,7 @@ public class MusicController {
 	@GetMapping({"/albums/{artistId}", "/albums/{artistId}/{state}"})
 	public List<AlbumDao> albumsByState(@PathVariable Integer artistId, @PathVariable(required=false) Integer state) {
 		List<AlbumDao> albums = albumService.getAlbumsByState(artistId, state);
-		logger.info("Controller is returning {} albums.", albums.size());
+		// logger.info("Controller is returning {} albums.", albums.size());
 		return albums;
 	}
 

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import net.brothertoad.home.music.bean.ArtistDao;
+import net.brothertoad.home.music.utils.Utils;
 
 @Service
 public class ArtistService implements IArtistService {
@@ -21,7 +22,7 @@ public class ArtistService implements IArtistService {
 
 	@Override
 	public List<ArtistDao> getArtistsByState(Integer state) {
-		if (state == null) {
+		if (state == null || state == Utils.ALL_STATES) {
 			return getAll();
 		}
 		List<ArtistDao> artists = new ArrayList<>();
@@ -39,7 +40,6 @@ public class ArtistService implements IArtistService {
 			artist.setName(rs.getString(2));
 			artists.add(artist);
 		});
-		logger.info("Found " + artists.size() + " artists.");
 		return artists;
 	}
 
@@ -52,7 +52,6 @@ public class ArtistService implements IArtistService {
 			artist.setName(rs.getString(2));
 			artists.add(artist);
 		});
-		logger.info("Found " + artists.size() + " artists.");
 		return artists;
 	}
 

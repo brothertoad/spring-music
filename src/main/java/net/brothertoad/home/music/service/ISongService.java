@@ -6,7 +6,8 @@ import net.brothertoad.home.music.bean.SongDao;
 
 public interface ISongService {
 	
-	public List<SongDao> getSongsByArtist(int artistId);
-	public List<SongDao> getSongsByState(int state);
+	public List<SongDao> getSongsByArtist(Integer artistId);
+	public List<SongDao> getSongsByState(Integer state);
+	public List<SongDao> getSongsByState(Integer albumId, Integer state);
 
 }

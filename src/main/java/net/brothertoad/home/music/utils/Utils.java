@@ -2,6 +2,8 @@ package net.brothertoad.home.music.utils;
 
 public class Utils {
 	
+	public static final int ALL_STATES = 1000;
+	
 	public static String createSortName(String name) {
 		String sortName = name;
 		String lcName = name.toLowerCase();

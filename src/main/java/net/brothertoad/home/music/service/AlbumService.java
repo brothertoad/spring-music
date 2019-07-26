@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import net.brothertoad.home.music.bean.AlbumDao;
+import net.brothertoad.home.music.utils.Utils;
 
 @Service
 public class AlbumService implements IAlbumService {
@@ -21,7 +22,7 @@ public class AlbumService implements IAlbumService {
 
 	@Override
 	public List<AlbumDao> getAlbumsByState(Integer artistId, Integer state) {
-		if (state == null) {
+		if (state == null || state == Utils.ALL_STATES) {
 			return getAlbums(artistId);
 		}
 		List<AlbumDao> albums = new ArrayList<>();
@@ -42,7 +43,7 @@ public class AlbumService implements IAlbumService {
 			album.setArtist(rs.getString(5));
 			albums.add(album);
 		});
-		logger.info("Found " + albums.size() + " artists.");
+		// logger.info("Found " + albums.size() + " artists.");
 		return albums;
 	}
 
@@ -63,7 +64,7 @@ public class AlbumService implements IAlbumService {
 			album.setArtist(rs.getString(5));
 			albums.add(album);
 		});
-		logger.info("Found " + albums.size() + " artists.");
+		// logger.info("Found " + albums.size() + " artists.");
 		return albums;
 	}
 

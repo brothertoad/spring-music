@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import net.brothertoad.home.music.bean.SongDao;
+import net.brothertoad.home.music.utils.Utils;
 
 @Service
 public class SongService implements ISongService {
@@ -20,7 +21,7 @@ public class SongService implements ISongService {
 	private JdbcTemplate jdbc;
 
 	@Override
-	public List<SongDao> getSongsByArtist(int artistId) {
+	public List<SongDao> getSongsByArtist(Integer artistId) {
 		List<SongDao> songs = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();
 		sb.append("select song.id, song.title, song.trackNum, ");
@@ -45,7 +46,33 @@ public class SongService implements ISongService {
 	}
 	
 	@Override
-	public List<SongDao> getSongsByState(int state) {
+	public List<SongDao> getSongsByState(Integer albumId, Integer state) {
+		if (state == null || state == Utils.ALL_STATES) {
+			return getSongsByArtist(albumId);
+		}
+		logger.info("Getting songs from album {} with state {}", albumId, state);
+		List<SongDao> songs = new ArrayList<>();
+		StringBuilder sb = new StringBuilder();
+		sb.append("select song.id, song.title, song.trackNum, song.state from songs song ");
+		sb.append("where song.album = ");
+		sb.append(albumId);
+		sb.append(" and song.state = ");
+		sb.append(state);
+		sb.append(" order by song.trackNum asc");
+		jdbc.query(sb.toString(), new Object[] {}, (rs) -> {
+			SongDao dao = new SongDao();
+			dao.setId(rs.getInt(1));
+			dao.setTitle(rs.getString(2));
+			dao.setTrackNum(rs.getInt(3));
+			dao.setState(rs.getInt(4));
+			songs.add(dao);
+		});
+		logger.info("Found {} songs", songs.size());
+		return songs;
+	}
+	
+	@Override
+	public List<SongDao> getSongsByState(Integer state) {
 		logger.info("Getting songs with state {}", state);
 		List<SongDao> songs = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();
