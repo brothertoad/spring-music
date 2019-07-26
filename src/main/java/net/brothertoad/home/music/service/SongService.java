@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import net.brothertoad.home.music.bean.SongDao;
+import net.brothertoad.home.music.bean.SongUpdateDao;
 import net.brothertoad.home.music.utils.Utils;
 
 @Service
@@ -95,6 +96,33 @@ public class SongService implements ISongService {
 		});
 		logger.info("Found {} songs", songs.size());
 		return songs;
+	}
+
+	@Override
+	public String updateSongs(SongUpdateDao updateInfo) {
+		if (updateInfo == null || updateInfo.getState() == null || updateInfo.getSongIds() == null) {
+			return "Bad parameters.";
+		}
+		if (updateInfo.getSongIds().isEmpty()) {
+			return "No songs to update.";
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("update songs set state = ");
+		sb.append(updateInfo.getState());
+		sb.append(" where id in (");
+		boolean needComma = false;
+		for (Integer songId: updateInfo.getSongIds()) {
+			if (needComma) {
+				sb.append(", ");
+			}
+			sb.append(songId);
+			needComma = true;
+		}
+		sb.append(")");
+		logger.info(sb.toString());
+		int numRows = jdbc.update(sb.toString());
+		logger.info("Updated {} songs.", numRows);
+		return "";
 	}
 
 }
