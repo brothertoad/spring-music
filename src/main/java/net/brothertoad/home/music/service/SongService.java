@@ -83,7 +83,7 @@ public class SongService implements ISongService {
 		sb.append("join artists artist on album.artist = artist.id ");
 		sb.append("where song.state = ");
 		sb.append(state);
-		sb.append(" order by artist.sortName asc, album.sortName asc, song.trackNum asc");
+		sb.append(" order by album.sortName asc, song.trackNum asc, artist.sortName asc");
 		jdbc.query(sb.toString(), new Object[] {}, (rs) -> {
 			SongDao dao = new SongDao();
 			dao.setId(rs.getInt(1));
